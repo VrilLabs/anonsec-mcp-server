@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+*.js.map
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Test coverage
+coverage/
+
+# Database
+data/
+*.sqlite
+*.db
+
+# Playwright (if used for testing)
+playwright-report/
+test-results/
+
+# Best Practices Badge automation
+.bestpractices.json
+playwright/.auth/
+
+# Temporary files
+*.tmp
+*.temp
