@@ -3,6 +3,7 @@
 > **Production-Ready MCP Server for Firefox Relay Anonymous Email Operations**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/VrilLabs/anonsec-mcp-server/badge)](https://scorecard.dev/viewer/?uri=github.com/VrilLabs/anonsec-mcp-server)
 
 **Firefox Relay MCP Server** (`anonsec-mcp-server`) is a production-grade Model Context Protocol server that provides comprehensive anonymous email management capabilities through Firefox Relay addresses. Built with privacy, security, and operational excellence as core principles, this server enables AI agents and applications to send, receive, and process emails while maintaining complete anonymity.
 
@@ -25,7 +26,7 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/anonsec-mcp-server.git
+git clone https://github.com/VrilLabs/anonsec-mcp-server.git
 cd anonsec-mcp-server
 
 # Install dependencies
