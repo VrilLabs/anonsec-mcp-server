@@ -42,7 +42,6 @@ playwright-report/
 test-results/
 
 # Best Practices Badge automation
-.bestpractices.json
 playwright/.auth/
 
 # Temporary files
