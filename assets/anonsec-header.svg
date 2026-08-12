@@ -16,11 +16,16 @@
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
     }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
     .circuit-grid {
       animation: float 6s ease-in-out infinite;
     }
-    .shield {
-      animation: pulse 4s ease-in-out infinite;
+    .mcp-node {
+      animation: spin 30s linear infinite;
+      transform-origin: center;
     }
     .envelope {
       animation: float 5s ease-in-out infinite reverse;
@@ -32,6 +37,9 @@
       transform-origin: center;
       animation: rotate 20s linear infinite;
     }
+    .data-flow {
+      animation: float 7s ease-in-out infinite;
+    }
   </style>
   
   <!-- Background gradient -->
@@ -42,7 +50,7 @@
       <stop offset="100%" style="stop-color:#0f172a;stop-opacity:1" />
     </linearGradient>
     
-    <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="mcpGradient" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#6366f1;stop-opacity:0.8" />
       <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0.8" />
     </linearGradient>
@@ -50,6 +58,11 @@
     <linearGradient id="envelopeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.7" />
       <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:0.7" />
+    </linearGradient>
+    
+    <linearGradient id="dataGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:0.6" />
     </linearGradient>
     
     <radialGradient id="nodeGradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
@@ -102,25 +115,56 @@
     <line x1="120" y1="52" x2="160" y2="0" stroke="#6366f1" stroke-width="2" opacity="0.6" />
     
     <!-- Pulsing center node -->
-    <circle cx="80" cy="26" r="12" fill="none" stroke="#6366f1" stroke-width="3" class="shield">
+    <circle cx="80" cy="26" r="12" fill="none" stroke="#6366f1" stroke-width="3">
       <animate attributeName="r" values="12;16;12" dur="3s" repeatCount="indefinite" />
     </circle>
-    <circle cx="80" cy="26" r="4" fill="#6366f1" class="shield" />
+    <circle cx="80" cy="26" r="4" fill="#6366f1" />
   </g>
 
-  <!-- Center: Shield (Security) -->
-  <g class="shield" transform="translate(450, 100)">
-    <path d="M 0 -60 L 40 -20 L 40 40 L -40 40 L -40 -20 Z" fill="url(#shieldGradient)" stroke="none" />
-    <path d="M 0 -60 L 40 -20 L 40 40 L -40 40 L -40 -20 Z" fill="none" stroke="#e2e8f0" stroke-width="2" opacity="0.6" />
+  <!-- Center: MCP Node Network (Represents the MCP Server) -->
+  <g class="mcp-node" transform="translate(500, 80)">
+    <!-- Outer hexagon frame -->
+    <path d="M -60 -50 L -20 -50 L 20 -20 L 60 -20 L 60 20 L 20 50 L -20 50 L -60 20 Z" 
+          fill="none" stroke="url(#mcpGradient)" stroke-width="2" />
     
-    <!-- Lock symbol inside shield -->
-    <rect x="-12" y="-10" width="24" height="30" rx="4" fill="none" stroke="#e2e8f0" stroke-width="2" />
-    <circle cx="0" cy="5" r="6" fill="none" stroke="#e2e8f0" stroke-width="2" />
-    <line x1="0" y1="-2" x2="0" y2="8" stroke="#e2e8f0" stroke-width="2" />
+    <!-- Inner hexagon (pulsing) -->
+    <path d="M -40 -35 L -15 -35 L 15 -15 L 40 -15 L 40 15 L 15 35 L -15 35 L -40 15 Z" 
+          fill="none" stroke="url(#mcpGradient)" stroke-width="1.5" opacity="0.8">
+      <animate attributeName="opacity" values="0.6;1;0.6" dur="3s" repeatCount="indefinite" />
+    </path>
     
-    <!-- Surrounding pulse rings -->
-    <circle cx="0" cy="0" r="70" fill="none" stroke="#6366f1" stroke-width="1" opacity="0.3" class="pulse-ring" />
-    <circle cx="0" cy="0" r="90" fill="none" stroke="#8b5cf6" stroke-width="1" opacity="0.2" class="pulse-ring" />
+    <!-- Connecting dots (representing network nodes) -->
+    <circle cx="-40" cy="-35" r="5" fill="#6366f1" />
+    <circle cx="-15" cy="-35" r="5" fill="#8b5cf6" />
+    <circle cx="15" cy="-15" r="5" fill="#6366f1" />
+    <circle cx="40" cy="-15" r="5" fill="#8b5cf6" />
+    <circle cx="40" cy="15" r="5" fill="#6366f1" />
+    <circle cx="15" cy="35" r="5" fill="#8b5cf6" />
+    <circle cx="-15" cy="35" r="5" fill="#6366f1" />
+    <circle cx="-40" cy="15" r="5" fill="#8b5cf6" />
+    
+    <!-- Center core (server node) -->
+    <circle cx="0" cy="0" r="20" fill="url(#mcpGradient)" />
+    <circle cx="0" cy="0" r="28" fill="none" stroke="#e2e8f0" stroke-width="2" opacity="0.9" />
+    
+    <!-- Plus sign (server indicator) -->
+    <line x1="-8" y1="0" x2="8" y2="0" stroke="#e2e8f0" stroke-width="3" />
+    <line x1="0" y1="-8" x2="0" y2="8" stroke="#e2e8f0" stroke-width="3" />
+    
+    <!-- Pulse rings -->
+    <circle cx="0" cy="0" r="50" fill="none" stroke="#6366f1" stroke-width="1" opacity="0.4" class="pulse-ring" />
+    <circle cx="0" cy="0" r="70" fill="none" stroke="#8b5cf6" stroke-width="1" opacity="0.2" class="pulse-ring" />
+    
+    <!-- Data flow particles -->
+    <circle cx="0" cy="0" r="3" fill="#10b981" class="data-flow">
+      <animateMotion path="M 0,0 25,-20 -25,20 0,0" dur="8s" repeatCount="indefinite" />
+    </circle>
+    <circle cx="0" cy="0" r="3" fill="#059669" class="data-flow">
+      <animateMotion path="M 0,0 -20,25 20,-25 0,0" dur="6s" repeatCount="indefinite" />
+    </circle>
+    <circle cx="0" cy="0" r="2" fill="#10b981" class="data-flow">
+      <animateMotion path="M 0,0 15,15 -15,-15 0,0" dur="5s" repeatCount="indefinite" />
+    </circle>
   </g>
 
   <!-- Right: Envelope (Email) -->
@@ -146,6 +190,28 @@
     </circle>
     <circle cx="40" cy="-8" r="3" fill="#3b82f6" opacity="0.7">
       <animate attributeName="cy" values="-8;8;-8" dur="3s" repeatCount="indefinite" />
+    </circle>
+    
+    <!-- Lock icon (security indicator) -->
+    <g transform="translate(45, 30)">
+      <rect x="-8" y="-12" width="16" height="20" rx="2" fill="none" stroke="#e2e8f0" stroke-width="1.5" />
+      <circle cx="0" cy="-2" r="4" fill="none" stroke="#e2e8f0" stroke-width="1.5" />
+      <line x1="0" y1="2" x2="0" y2="6" stroke="#e2e8f0" stroke-width="1.5" />
+    </g>
+  </g>
+
+  <!-- Data Flow Lines (connecting all elements) -->
+  <g transform="translate(0, 150)" opacity="0.4">
+    <path d="M 250 0 Q 400 -30 500 0" fill="none" stroke="#10b981" stroke-width="2" />
+    <path d="M 500 0 Q 600 -20 700 0" fill="none" stroke="#059669" stroke-width="2" />
+    <path d="M 700 0 Q 850 -30 950 0" fill="none" stroke="#10b981" stroke-width="2" />
+    
+    <!-- Animated data packets -->
+    <circle cx="350" cy="0" r="4" fill="#10b981" class="data-flow">
+      <animateMotion path="M 0,0 100,0" dur="5s" repeatCount="indefinite" />
+    </circle>
+    <circle cx="650" cy="0" r="4" fill="#059669" class="data-flow">
+      <animateMotion path="M 0,0 -100,0" dur="6s" repeatCount="indefinite" />
     </circle>
   </g>
 
