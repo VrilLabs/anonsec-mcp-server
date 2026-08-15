@@ -1,10 +1,12 @@
 /**
  * Type definitions for Firefox Relay MCP Server
- * 
+ *
  * This module contains all type definitions used throughout the application,
  * following golden-standard programming practices for maximal type safety
  * and programmatic excellence.
  */
+
+import type { z } from 'zod/v4';
 
 // ============================================================================
 // Firefox Relay API Types
@@ -109,9 +111,11 @@ export interface DatabaseEmailLog {
   received_at: string;
   read_at: string | null;
   body: string | null; // Encrypted at rest
+  body_encrypted: boolean; // Whether `body` is currently ciphertext
   otp_code: string | null; // Extracted OTP code
   is_otp: boolean;
   headers: string | null; // Encrypted at rest
+  headers_encrypted: boolean; // Whether `headers` is currently ciphertext
   size: number;
 }
 
@@ -139,6 +143,7 @@ export interface DatabaseAuditLog {
   target_id: string | null; // ID of the target resource
   target_type: string | null; // Type of the target resource
   details: string | null; // Additional details (encrypted)
+  details_encrypted: boolean; // Whether `details` is currently ciphertext
   ip_address: string | null;
   user_agent: string | null;
 }
@@ -171,6 +176,24 @@ export interface ToolExecutionContext {
   timestamp: string;
   userId: string | null;
   sessionId: string | null;
+}
+
+/**
+ * Result returned by an MCP tool handler
+ */
+export interface ToolResult {
+  content: Array<{ type: 'text'; text: string }>;
+  isError: boolean;
+}
+
+/**
+ * Internal definition of an MCP tool, used to register tools with the server
+ */
+export interface MCPTool {
+  name: string;
+  description: string;
+  inputSchema: z.ZodTypeAny;
+  handler: (input: unknown, context?: Record<string, unknown>) => Promise<ToolResult>;
 }
 
 // ============================================================================
@@ -228,13 +251,15 @@ export interface ProcessedEmail {
 /**
  * Security flags for email content
  */
-export type SecurityFlag = 
+export type SecurityFlag =
   | 'phishing_suspected'
   | 'malware_detected'
   | 'spam_patterns'
   | 'unencrypted_sensitive_data'
   | 'suspicious_links'
-  | 'mismatched_sender';
+  | 'mismatched_sender'
+  | 'otp_security_warning'
+  | 'otp_in_subject';
 
 // ============================================================================
 // Response Types
