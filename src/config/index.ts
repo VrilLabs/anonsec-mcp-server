@@ -27,13 +27,13 @@ const EnvironmentSchema = z.object({
   AGENTANON_ENCRYPTION_KEY: z.string().default(''),
   AGENTANON_SERVER_PORT: z.string().transform(Number).pipe(
     z.number().int().positive().max(65535)
-  ).default(DEFAULT_CONFIG.port!.toString()),
+  ).default(DEFAULT_CONFIG.port!),
   AGENTANON_SERVER_HOST: z.string().default(DEFAULT_CONFIG.host!),
   AGENTANON_LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error'])
     .default(DEFAULT_CONFIG.logLevel!),
-  AGENTANON_ENABLE_LOGGING: z.string().transform((val) => 
+  AGENTANON_ENABLE_LOGGING: z.string().transform((val) =>
     val.toLowerCase() !== 'false' && val.toLowerCase() !== '0'
-  ).default('true'),
+  ).default(true),
 });
 
 // ============================================================================
@@ -49,23 +49,22 @@ const EnvironmentSchema = z.object({
 export class Configuration {
   private static instance: Configuration | null = null;
   private readonly config: McpServerConfig;
-  private readonly env: Record<string, string>;
 
   /**
    * Private constructor - use getInstance() instead
    */
   private constructor(
-    env: Record<string, string> = process.env,
+    env: NodeJS.ProcessEnv = process.env,
     overrides: Partial<McpServerConfig> = {}
   ) {
     // Parse and validate environment variables
     const parsedEnv = EnvironmentSchema.safeParse(env);
-    
+
     if (!parsedEnv.success) {
       const errors = parsedEnv.error.issues.map(
         (issue) => `  - ${issue.path.join('.')}: ${issue.message}`
       ).join('\n');
-      
+
       throw new Error(
         `Configuration validation failed:\n${errors}\n\n` +
         `Please ensure all required environment variables are set.`
@@ -75,11 +74,10 @@ export class Configuration {
     const envConfig = parsedEnv.data;
 
     // Build final configuration
-    this.env = env;
     this.config = {
       // Use overrides first, then env, then defaults
-      name: overrides.name || DEFAULT_CONFIG.name,
-      version: overrides.version || DEFAULT_CONFIG.version,
+      name: overrides.name || DEFAULT_CONFIG.name || 'anonsec-mcp-server',
+      version: overrides.version || DEFAULT_CONFIG.version || '1.0.0',
       apiKey: overrides.apiKey || envConfig.AGENTANON_EMAIL_API_KEY,
       databasePath: overrides.databasePath || envConfig.AGENTANON_DATABASE_PATH,
       encryptionKey: overrides.encryptionKey || envConfig.AGENTANON_ENCRYPTION_KEY,
@@ -103,7 +101,7 @@ export class Configuration {
    * Get the singleton configuration instance
    */
   public static getInstance(
-    env: Record<string, string> = process.env,
+    env: NodeJS.ProcessEnv = process.env,
     overrides: Partial<McpServerConfig> = {}
   ): Configuration {
     if (!Configuration.instance) {
@@ -123,7 +121,7 @@ export class Configuration {
    * Create a new configuration instance (useful for testing)
    */
   public static create(
-    env: Record<string, string> = process.env,
+    env: NodeJS.ProcessEnv = process.env,
     overrides: Partial<McpServerConfig> = {}
   ): Configuration {
     return new Configuration(env, overrides);

@@ -15,17 +15,17 @@
  */
 
 import { z } from 'zod/v4';
-import { MCPTool, ToolResult } from '@modelcontextprotocol/sdk/server';
 import { getDatabase } from '../db';
-import { Configuration } from '../config';
 import {
   DatabaseEmailLog,
+  MCPTool,
+  ToolResult,
   OtpExtractionResult,
   SecurityFlag,
   EmailContent,
 } from '../types';
 import { v4 as uuidv4 } from 'uuid';
-import { extractOtpFromText, extractOtpFromEmail, isValidOtpCode } from '../utils/otp';
+import { extractOtpFromText, isValidOtpCode } from '../utils/otp';
 
 // ============================================================================
 // Input Validation Schema
@@ -306,15 +306,15 @@ function processOtpEmail(
  * @param context - MCP tool execution context
  * @returns Tool result with the latest OTP information
  */
+// eslint-disable-next-line @typescript-eslint/require-await -- async to satisfy the MCPTool handler contract; this tool has no async work
 export async function latestEmailOtpHandler(
   input: unknown,
   context?: Record<string, unknown>
-): Promise<ToolResult<LatestEmailOtpResponse>> {
+): Promise<ToolResult> {
   const requestId = uuidv4();
   const timestamp = new Date().toISOString();
 
   // Get dependencies
-  const config = Configuration.getInstance();
   const db = getDatabase();
 
   try {
@@ -366,7 +366,7 @@ export async function latestEmailOtpHandler(
     db.insertAuditLog({
       timestamp,
       action: 'get_latest_otp_email',
-      user_id: context?.userId || null,
+      user_id: typeof context?.userId === 'string' ? context.userId : null,
       target_id: String(otpEmail.id),
       target_type: 'email_log',
       details: JSON.stringify({
@@ -425,7 +425,7 @@ export async function latestEmailOtpHandler(
       db.insertAuditLog({
         timestamp,
         action: 'latest_email_otp_error',
-        user_id: context?.userId || null,
+        user_id: typeof context?.userId === 'string' ? context.userId : null,
         target_id: requestId,
         target_type: 'request',
         details: JSON.stringify({
@@ -555,14 +555,5 @@ export const latestEmailOtpTool: MCPTool = {
 // ============================================================================
 // Exports
 // ============================================================================
-
-export {
-  LatestEmailOtpInputSchema,
-  LatestEmailOtpResponse,
-  NoOtpEmailsFoundError,
-  OtpExtractionError,
-  InvalidOtpError,
-  ExpiredOtpError,
-};
 
 export default latestEmailOtpTool;

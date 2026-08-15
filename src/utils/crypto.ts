@@ -17,9 +17,8 @@
  * - Constant-time comparison for MAC verification
  */
 
-import { randomBytes, scrypt, createCipheriv, createDecipheriv, timingSafeEqual } from 'node:crypto';
+import { randomBytes, scryptSync, createCipheriv, createDecipheriv, timingSafeEqual } from 'node:crypto';
 import { Buffer } from 'node:buffer';
-import { SECURITY_CONSTANTS } from '../types';
 
 // ============================================================================
 // Constants
@@ -100,13 +99,13 @@ export function deriveKeyFromPassword(
   password: string,
   salt: Buffer = randomBytes(SALT_LENGTH)
 ): { key: Buffer; salt: Buffer } {
-  const key = scrypt(password, salt, KEY_LENGTH, {
+  const key = scryptSync(password, salt, KEY_LENGTH, {
     N: 1 << 16, // CPU/memory cost parameter
     r: 8, // Block size
-    p: 1, // Parallelization parameter
+    p: KDF_PARALLELISM,
     maxmem: KDF_MEMORY_COST,
   });
-  
+
   return { key, salt };
 }
 
@@ -117,10 +116,10 @@ export function deriveKeyFromPasswordWithSalt(
   password: string,
   salt: Buffer
 ): Buffer {
-  return scrypt(password, salt, KEY_LENGTH, {
+  return scryptSync(password, salt, KEY_LENGTH, {
     N: 1 << 16,
     r: 8,
-    p: 1,
+    p: KDF_PARALLELISM,
     maxmem: KDF_MEMORY_COST,
   });
 }
