@@ -13,23 +13,17 @@
  */
 
 import { z } from 'zod/v4';
-import { CallToolRequestSchema, MCPTool, ToolResult } from '@modelcontextprotocol/sdk/server';
-import { getClient } from '../api';
 import { getDatabase } from '../db';
-import { Configuration } from '../config';
 import {
   DatabaseEmailLog,
-  DatabaseRelayAddress,
-  ApiResponse,
-  ApiError,
-  FIREFOX_RELAY_CONSTANTS,
+  MCPTool,
+  ToolResult,
   EmailContent,
   OtpExtractionResult,
-  ProcessedEmail,
   SecurityFlag,
 } from '../types';
 import { v4 as uuidv4 } from 'uuid';
-import { extractOtpFromText, extractOtpFromEmail } from '../utils/otp';
+import { extractOtp as extractOtpFromText } from '../utils/otp';
 
 // ============================================================================
 // Input Validation Schema
@@ -236,7 +230,7 @@ function analyzeSecurity(email: EmailContent): SecurityFlag[] {
 /**
  * Process raw email content into structured format
  */
-function processEmailContent(
+export function processEmailContent(
   dbEmail: DatabaseEmailLog & { full_address: string },
   extractOtp: boolean = true
 ): RetrievedEmail {
@@ -244,7 +238,7 @@ function processEmailContent(
   let headers: Record<string, string> | null = null;
   if (dbEmail.headers) {
     try {
-      headers = JSON.parse(dbEmail.headers);
+      headers = JSON.parse(dbEmail.headers) as Record<string, string>;
     } catch {
       headers = { raw: dbEmail.headers };
     }
@@ -325,17 +319,16 @@ function processEmailContent(
  * @param context - MCP tool execution context
  * @returns Tool result with retrieved emails
  */
+// eslint-disable-next-line @typescript-eslint/require-await -- async to satisfy the MCPTool handler contract; this tool has no async work
 export async function readEmailsHandler(
   input: unknown,
   context?: Record<string, unknown>
-): Promise<ToolResult<ReadEmailsResponse>> {
+): Promise<ToolResult> {
   const requestId = uuidv4();
   const timestamp = new Date().toISOString();
   
   // Get dependencies
-  const config = Configuration.getInstance();
   const db = getDatabase();
-  const client = getClient();
   
   try {
     // Validate input
@@ -477,7 +470,7 @@ export async function readEmailsHandler(
       db.insertAuditLog({
         timestamp,
         action: 'read_email',
-        user_id: context?.userId || null,
+        user_id: typeof context?.userId === 'string' ? context.userId : null,
         target_id: String(email.id),
         target_type: 'email_log',
         details: JSON.stringify({
@@ -522,7 +515,7 @@ export async function readEmailsHandler(
       db.insertAuditLog({
         timestamp,
         action: 'read_emails_error',
-        user_id: context?.userId || null,
+        user_id: typeof context?.userId === 'string' ? context.userId : null,
         target_id: requestId,
         target_type: 'request',
         details: JSON.stringify({
@@ -574,11 +567,5 @@ export const readEmailsTool: MCPTool = {
 // ============================================================================
 // Exports
 // ============================================================================
-
-export {
-  ReadEmailsInputSchema,
-  EmailRetrievalError,
-  ResourceNotFoundError,
-};
 
 export default readEmailsTool;
