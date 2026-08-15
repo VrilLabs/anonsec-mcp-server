@@ -14,23 +14,14 @@
  */
 
 import { z } from 'zod/v4';
-import { CallToolRequestSchema, MCPTool, ToolResult } from '@modelcontextprotocol/sdk/server';
 import { getClient } from '../api';
 import { getDatabase } from '../db';
-import { Configuration } from '../config';
 import {
-  DatabaseEmailLog,
-  DatabaseRelayAddress,
-  ApiResponse,
-  ApiError,
-  FIREFOX_RELAY_CONSTANTS,
-  OtpExtractionResult,
-  SecurityFlag,
-  EmailContent,
+  MCPTool,
+  ToolResult,
 } from '../types';
 import { v4 as uuidv4 } from 'uuid';
-import { extractOtpFromText, extractOtpFromEmail } from '../utils/otp';
-import { processEmailContent, RetrievedEmail, analyzeSecurity } from './read_emails';
+import { processEmailContent, RetrievedEmail } from './read_emails';
 
 // ============================================================================
 // Input Validation Schema
@@ -147,15 +138,15 @@ export class InvalidRelayAddressError extends Error {
  * @param context - MCP tool execution context
  * @returns Tool result with the latest email
  */
+// eslint-disable-next-line @typescript-eslint/require-await -- async to satisfy the MCPTool handler contract; this tool has no async work
 export async function latestEmailHandler(
   input: unknown,
   context?: Record<string, unknown>
-): Promise<ToolResult<LatestEmailResponse>> {
+): Promise<ToolResult> {
   const requestId = uuidv4();
   const timestamp = new Date().toISOString();
-  
+
   // Get dependencies
-  const config = Configuration.getInstance();
   const db = getDatabase();
   const client = getClient();
   
@@ -252,7 +243,7 @@ export async function latestEmailHandler(
     db.insertAuditLog({
       timestamp,
       action: 'get_latest_email',
-      user_id: context?.userId || null,
+      user_id: typeof context?.userId === 'string' ? context.userId : null,
       target_id: String(latestEmail.id),
       target_type: 'email_log',
       details: JSON.stringify({
@@ -297,7 +288,7 @@ export async function latestEmailHandler(
       db.insertAuditLog({
         timestamp,
         action: 'latest_email_error',
-        user_id: context?.userId || null,
+        user_id: typeof context?.userId === 'string' ? context.userId : null,
         target_id: requestId,
         target_type: 'request',
         details: JSON.stringify({
@@ -404,13 +395,5 @@ export const latestEmailTool: MCPTool = {
 // ============================================================================
 // Exports
 // ============================================================================
-
-export {
-  LatestEmailInputSchema,
-  LatestEmailResponse,
-  NoEmailsFoundError,
-  LatestEmailRetrievalError,
-  InvalidRelayAddressError,
-};
 
 export default latestEmailTool;
