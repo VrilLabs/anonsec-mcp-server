@@ -14,10 +14,8 @@
  */
 
 import { z } from 'zod/v4';
-import { FIREFOX_RELAY_CONSTANTS, SECURITY_CONSTANTS } from '../types';
+import { FIREFOX_RELAY_CONSTANTS } from '../types';
 import { Configuration } from '../config';
-import { getDatabase } from '../db';
-import { v4 as uuidv4 } from 'uuid';
 
 // ============================================================================
 // Error Classes
@@ -100,17 +98,6 @@ interface ApiResponse<T> {
     message: string;
     details?: Record<string, unknown>;
   };
-}
-
-/**
- * Paginated response
- */
-interface PaginatedResponse<T> {
-  items: T[];
-  total: number;
-  page: number;
-  pageSize: number;
-  hasMore: boolean;
 }
 
 // ============================================================================
@@ -200,7 +187,7 @@ export class FirefoxRelayClient {
    */
   public getRateLimitStatus(): RateLimitStatus {
     const now = Date.now();
-    const windowAge = now - this.rateLimitState.windowStart;
+    let windowAge = now - this.rateLimitState.windowStart;
     
     // Reset window if older than 60 seconds
     if (windowAge > 60000) {
@@ -378,7 +365,7 @@ export class FirefoxRelayClient {
           }
 
           // Parse response
-          const responseData: ApiResponse<T> = await response.json();
+          const responseData = await response.json() as ApiResponse<T>;
 
           // Check for API-level errors
           if (responseData.error) {
@@ -936,15 +923,5 @@ export const UpdateRelayAddressSchema = z.object({
 // ============================================================================
 // Exports
 // ============================================================================
-
-export {
-  FirefoxRelayClient,
-  FirefoxRelayError,
-  AuthError,
-  RateLimitError,
-  ValidationError,
-  ResourceNotFoundError,
-  ServerError,
-};
 
 export default FirefoxRelayClient;

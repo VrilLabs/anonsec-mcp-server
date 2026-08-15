@@ -300,28 +300,27 @@ function extractCodesFromText(
   const patterns = providerPatterns ? [providerPatterns] : Object.values(OTP_PROVIDERS);
   
   for (const patternInfo of patterns) {
-    const { patterns: regexPatterns, providerName, codeType = 'numeric' } = patternInfo;
-    
+    const { patterns: regexPatterns, providerName } = patternInfo;
+    const codeLength = patternInfo.codeLength as number | readonly number[];
+    const codeType = 'codeType' in patternInfo ? patternInfo.codeType : 'numeric';
+
     for (let i = 0; i < regexPatterns.length; i++) {
       const regex = regexPatterns[i];
       const match = normalized.match(regex);
-      
+
       if (match) {
         const code = cleanCode(match[1]);
-        
+
         // Skip if code is too short
         if (code.length < 4) continue;
-        
-        // Validate code length if specified
-        const validLengths = Array.isArray(codeType) 
-          ? codeType.map(l => typeof l === 'number' ? l : parseInt(l, 10))
-          : [typeof codeType === 'number' ? codeType : parseInt(codeType, 10)];
-        
-        if (!validLengths.includes(code.length) && codeType === 'numeric') {
-          // For alphanumeric, accept broader range
-          if (codeType === 'numeric' && !/^\d+$/.test(code)) continue;
-        }
-        
+
+        // Validate code length against the provider's expected length(s)
+        const validLengths: readonly number[] = Array.isArray(codeLength) ? codeLength : [codeLength];
+        if (!validLengths.includes(code.length)) continue;
+
+        // For numeric-only providers, reject codes that aren't purely numeric
+        if (codeType === 'numeric' && !/^\d+$/.test(code)) continue;
+
         results.push({
           code,
           provider: providerName,
@@ -348,7 +347,7 @@ function extractAllPotentialCodes(text: string): OtpExtractionResult[] {
     const codes = extractCodesFromText(text, patternInfo);
     
     for (const { code, type } of codes) {
-      const { expiresAt, ttlSeconds } = parseExpiration(text);
+      const { expiresAt } = parseExpiration(text);
       const confidence = calculateConfidence(
         patternInfo.providerName,
         code.length,
@@ -373,7 +372,7 @@ function extractAllPotentialCodes(text: string): OtpExtractionResult[] {
     // Avoid duplicates
     if (results.some(r => r.code === code)) continue;
     
-    const { expiresAt, ttlSeconds } = parseExpiration(text);
+    const { expiresAt } = parseExpiration(text);
     const confidence = calculateConfidence(
       null,
       code.length,
@@ -397,7 +396,7 @@ function extractAllPotentialCodes(text: string): OtpExtractionResult[] {
     // Avoid duplicates
     if (results.some(r => r.code === code)) continue;
     
-    const { expiresAt, ttlSeconds } = parseExpiration(text);
+    const { expiresAt } = parseExpiration(text);
     const confidence = calculateConfidence(
       null,
       code.length,
@@ -502,6 +501,7 @@ export function extractOtpFromText(
   const seenCodes = new Set<string>();
   
   for (const result of filtered) {
+    if (!result.code) continue;
     if (!seenCodes.has(result.code)) {
       seenCodes.add(result.code);
       uniqueResults.push(result);

@@ -14,8 +14,8 @@
  */
 
 import Database from 'better-sqlite3';
-import { join, dirname } from 'node:path';
-import { existsSync, mkdirSync } from 'node:fs';
+import { dirname } from 'node:path';
+import { existsSync, mkdirSync, statSync } from 'node:fs';
 import {
   encryptToHex,
   decryptFromHex,
@@ -38,16 +38,6 @@ import { Configuration } from '../config';
  * Database schema version
  */
 const SCHEMA_VERSION = 1;
-
-/**
- * Field names that should be encrypted at rest
- */
-const ENCRYPTED_FIELDS = new Set([
-  'body',
-  'headers',
-  'details',
-  'key_hash',
-]);
 
 // ============================================================================
 // Error Classes
@@ -522,7 +512,7 @@ export class AnonSecDatabase {
   /**
    * Insert a new email log
    */
-  public insertEmailLog(data: Omit<DatabaseEmailLog, 'id'>): DatabaseEmailLog {
+  public insertEmailLog(data: Omit<DatabaseEmailLog, 'id' | 'body_encrypted' | 'headers_encrypted'>): DatabaseEmailLog {
     // Encrypt sensitive fields
     const bodyEncrypted = this.encryptField(data.body || null);
     const headersEncrypted = this.encryptField(data.headers || null);
@@ -555,6 +545,10 @@ export class AnonSecDatabase {
     return {
       ...data,
       id: result.lastInsertRowid as number,
+      body: bodyEncrypted.encrypted,
+      body_encrypted: bodyEncrypted.wasEncrypted,
+      headers: headersEncrypted.encrypted,
+      headers_encrypted: headersEncrypted.wasEncrypted,
     };
   }
 
@@ -798,11 +792,11 @@ export class AnonSecDatabase {
       WHERE key_hash = ?
     `);
 
-    const row = stmt.get(keyHash) as DatabaseApiKey | undefined;
+    const row = stmt.get(keyHash) as (Omit<DatabaseApiKey, 'permissions'> & { permissions: string }) | undefined;
     return row ? {
       ...row,
       is_active: Boolean(row.is_active),
-      permissions: JSON.parse(row.permissions),
+      permissions: JSON.parse(row.permissions) as string[],
     } : null;
   }
 
@@ -820,11 +814,11 @@ export class AnonSecDatabase {
       ORDER BY created_at DESC
     `);
 
-    const rows = stmt.all() as DatabaseApiKey[];
+    const rows = stmt.all() as (Omit<DatabaseApiKey, 'permissions'> & { permissions: string })[];
     return rows.map(row => ({
       ...row,
       is_active: Boolean(row.is_active),
-      permissions: JSON.parse(row.permissions),
+      permissions: JSON.parse(row.permissions) as string[],
     }));
   }
 
@@ -866,7 +860,7 @@ export class AnonSecDatabase {
   /**
    * Insert a new audit log entry
    */
-  public insertAuditLog(data: Omit<DatabaseAuditLog, 'id'>): DatabaseAuditLog {
+  public insertAuditLog(data: Omit<DatabaseAuditLog, 'id' | 'details_encrypted'>): DatabaseAuditLog {
     // Encrypt details field if it exists
     const detailsEncrypted = data.details 
       ? this.encryptField(data.details)
@@ -894,6 +888,8 @@ export class AnonSecDatabase {
     return {
       ...data,
       id: result.lastInsertRowid as number,
+      details: detailsEncrypted.encrypted,
+      details_encrypted: detailsEncrypted.wasEncrypted,
     };
   }
 
@@ -1012,8 +1008,7 @@ export class AnonSecDatabase {
       // Get database file size
       const dbPath = this.config.get('databasePath');
       try {
-        const fs = await import('node:fs');
-        const dbStats = await fs.promises.stat(dbPath);
+        const dbStats = statSync(dbPath);
         stats.databaseSize = dbStats.size;
       } catch {
         // Ignore file size if we can't read it
@@ -1038,7 +1033,7 @@ export class AnonSecDatabase {
       this.db.prepare('DELETE FROM relay_addresses').run();
       this.db.prepare('DELETE FROM api_keys').run();
       this.db.prepare('DELETE FROM audit_logs').run();
-    })();
+    });
   }
 
   /**
@@ -1099,14 +1094,5 @@ export function resetDatabase(): void {
 // ============================================================================
 // Exports
 // ============================================================================
-
-export {
-  AnonSecDatabase,
-  DatabaseError,
-  ConnectionError,
-  QueryError,
-  NotFoundError,
-  SCHEMA_VERSION,
-};
 
 export default AnonSecDatabase;

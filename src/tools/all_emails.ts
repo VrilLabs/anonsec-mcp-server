@@ -13,20 +13,14 @@
  */
 
 import { z } from 'zod/v4';
-import { CallToolRequestSchema, MCPTool, ToolResult } from '@modelcontextprotocol/sdk/server';
-import { getClient } from '../api';
 import { getDatabase } from '../db';
-import { Configuration } from '../config';
 import {
   DatabaseEmailLog,
-  ApiResponse,
-  ApiError,
-  FIREFOX_RELAY_CONSTANTS,
-  OtpExtractionResult,
+  MCPTool,
+  ToolResult,
 } from '../types';
 import { v4 as uuidv4 } from 'uuid';
-import { extractOtpFromText } from '../utils/otp';
-import { analyzeSecurity, processEmailContent, RetrievedEmail } from './read_emails';
+import { processEmailContent, RetrievedEmail } from './read_emails';
 
 // ============================================================================
 // Input Validation Schema
@@ -141,15 +135,15 @@ export class AllEmailsRetrievalError extends Error {
  * @param context - MCP tool execution context
  * @returns Tool result with paginated email results
  */
+// eslint-disable-next-line @typescript-eslint/require-await -- async to satisfy the MCPTool handler contract; this tool has no async work
 export async function allEmailsHandler(
   input: unknown,
   context?: Record<string, unknown>
-): Promise<ToolResult<AllEmailsResponse>> {
+): Promise<ToolResult> {
   const requestId = uuidv4();
   const timestamp = new Date().toISOString();
-  
+
   // Get dependencies
-  const config = Configuration.getInstance();
   const db = getDatabase();
   
   try {
@@ -225,9 +219,7 @@ export async function allEmailsHandler(
         headers_encrypted: Boolean(email.headers_encrypted),
       };
     });
-    
-    const total = processedAllEmails.length;
-    
+
     // Apply filters
     let filtered = processedAllEmails;
     
@@ -288,7 +280,7 @@ export async function allEmailsHandler(
       db.insertAuditLog({
         timestamp,
         action: 'list_all_emails',
-        user_id: context?.userId || null,
+        user_id: typeof context?.userId === 'string' ? context.userId : null,
         target_id: String(email.id),
         target_type: 'email_log',
         details: JSON.stringify({
@@ -344,7 +336,7 @@ export async function allEmailsHandler(
       db.insertAuditLog({
         timestamp,
         action: 'all_emails_error',
-        user_id: context?.userId || null,
+        user_id: typeof context?.userId === 'string' ? context.userId : null,
         target_id: requestId,
         target_type: 'request',
         details: JSON.stringify({
@@ -400,11 +392,5 @@ export const allEmailsTool: MCPTool = {
 // ============================================================================
 // Exports
 // ============================================================================
-
-export {
-  AllEmailsInputSchema,
-  AllEmailsResponse,
-  AllEmailsRetrievalError,
-};
 
 export default allEmailsTool;
