@@ -13,14 +13,12 @@
  */
 
 import { z } from 'zod/v4';
-import { CallToolRequestSchema, MCPTool, ToolResult } from '@modelcontextprotocol/sdk/server';
 import { getClient } from '../api';
 import { getDatabase } from '../db';
-import { Configuration } from '../config';
 import {
   DatabaseRelayAddress,
-  ApiResponse,
-  ApiError,
+  MCPTool,
+  ToolResult,
   FIREFOX_RELAY_CONSTANTS,
 } from '../types';
 import { v4 as uuidv4 } from 'uuid';
@@ -128,7 +126,7 @@ export class RelayCreationError extends Error {
 export class ValidationFailureError extends Error {
   constructor(
     message: string,
-    public readonly validationErrors: z.Issue[]
+    public readonly validationErrors: z.ZodIssue[]
   ) {
     super(message);
     this.name = 'ValidationFailureError';
@@ -156,12 +154,11 @@ export class ValidationFailureError extends Error {
 export async function newEmailsHandler(
   input: unknown,
   context?: Record<string, unknown>
-): Promise<ToolResult<NewEmailsResponse>> {
+): Promise<ToolResult> {
   const requestId = uuidv4();
   const timestamp = new Date().toISOString();
   
   // Get dependencies
-  const config = Configuration.getInstance();
   const db = getDatabase();
   const client = getClient();
   
@@ -239,7 +236,7 @@ export async function newEmailsHandler(
       db.insertAuditLog({
         timestamp,
         action: 'create_relay_address',
-        user_id: context?.userId || null,
+        user_id: typeof context?.userId === 'string' ? context.userId : null,
         target_id: String(storedAddress.id),
         target_type: 'relay_address',
         details: JSON.stringify({
@@ -320,7 +317,7 @@ export async function newEmailsHandler(
       db.insertAuditLog({
         timestamp,
         action: 'create_relay_address_error',
-        user_id: context?.userId || null,
+        user_id: typeof context?.userId === 'string' ? context.userId : null,
         target_id: requestId,
         target_type: 'request',
         details: JSON.stringify({
@@ -370,11 +367,5 @@ export const newEmailsTool: MCPTool = {
 // ============================================================================
 // Exports
 // ============================================================================
-
-export {
-  NewEmailsInputSchema,
-  RelayCreationError,
-  ValidationFailureError,
-};
 
 export default newEmailsTool;
