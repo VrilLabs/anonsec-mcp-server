@@ -18,18 +18,12 @@
  */
 
 import { z } from 'zod/v4';
-import { MCPTool, ToolResult } from '@modelcontextprotocol/sdk/server';
 import { getClient } from '../api';
 import { getDatabase } from '../db';
-import { Configuration } from '../config';
 import {
-  DatabaseRelayAddress,
   DatabaseEmailLog,
-  ApiResponse,
-  ApiError,
-  FIREFOX_RELAY_CONSTANTS,
-  SecurityFlag,
-  EmailContent,
+  MCPTool,
+  ToolResult,
 } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 import { extractOtpFromText, isValidOtpCode } from '../utils/otp';
@@ -85,7 +79,7 @@ export const SendAnonEmailInputSchema = z.object({
   /**
    * OTP code to include in the email (for testing/simulation)
    */
-  otpCode: z.string().length(4, 10).optional(),
+  otpCode: z.string().min(4).max(10).optional(),
 
   /**
    * Whether to actually send the email (simulated in this implementation)
@@ -265,22 +259,16 @@ function processEmailForStorage(
   headers?: Record<string, string>,
   isOtp: boolean = false,
   otpCode?: string
-): DatabaseEmailLog {
-  const db = getDatabase();
+): Omit<DatabaseEmailLog, 'id' | 'body_encrypted' | 'headers_encrypted'> {
   const emailId = generateEmailId();
   const now = new Date().toISOString();
 
-  // Encrypt sensitive fields
-  const encryptedBody = db.encryptField(body, true);
-  const encryptedHeaders = headers ? db.encryptField(JSON.stringify(headers), true) : null;
-
   // Calculate approximate size
-  const size = Buffer.byteLength(body, 'utf8') + 
+  const size = Buffer.byteLength(body, 'utf8') +
                (html ? Buffer.byteLength(html, 'utf8') : 0) +
                Buffer.byteLength(subject, 'utf8');
 
   return {
-    id: 0, // Will be set by database
     relay_address_id: relayAddressId,
     email_id: emailId,
     sender: '', // Will be populated when email is actually sent
@@ -288,12 +276,10 @@ function processEmailForStorage(
     subject,
     received_at: now,
     read_at: null,
-    body: encryptedBody.encrypted,
-    body_encrypted: true,
+    body, // Encrypted at rest by insertEmailLog
     otp_code: isOtp ? (otpCode || null) : null,
     is_otp: isOtp,
-    headers: encryptedHeaders,
-    headers_encrypted: Boolean(encryptedHeaders),
+    headers: headers ? JSON.stringify(headers) : null, // Encrypted at rest by insertEmailLog
     size,
   };
 }
@@ -321,15 +307,15 @@ function processEmailForStorage(
  * @param context - MCP tool execution context
  * @returns Tool result with send operation details
  */
+// eslint-disable-next-line @typescript-eslint/require-await -- async to satisfy the MCPTool handler contract; this tool has no async work
 export async function sendAnonEmailHandler(
   input: unknown,
   context?: Record<string, unknown>
-): Promise<ToolResult<SendAnonEmailResponse>> {
+): Promise<ToolResult> {
   const requestId = uuidv4();
   const timestamp = new Date().toISOString();
 
   // Get dependencies
-  const config = Configuration.getInstance();
   const db = getDatabase();
   const client = getClient();
 
@@ -440,10 +426,8 @@ export async function sendAnonEmailHandler(
     );
 
     // Insert email into database (simulating send)
-    const insertId = db.insertEmailLog(emailLog);
-
-    // Update the email log with the actual ID
-    const insertedEmail = { ...emailLog, id: insertId };
+    const insertedEmail = db.insertEmailLog(emailLog);
+    const insertId = insertedEmail.id;
 
     // In a real implementation, this is where we would make the actual
     // API call to send the email through Firefox Relay
@@ -456,7 +440,7 @@ export async function sendAnonEmailHandler(
     db.insertAuditLog({
       timestamp,
       action: 'send_anon_email',
-      user_id: context?.userId || null,
+      user_id: typeof context?.userId === 'string' ? context.userId : null,
       target_id: String(insertId),
       target_type: 'email_log',
       details: JSON.stringify({
@@ -516,7 +500,7 @@ export async function sendAnonEmailHandler(
       db.insertAuditLog({
         timestamp,
         action: 'send_anon_email_error',
-        user_id: context?.userId || null,
+        user_id: typeof context?.userId === 'string' ? context.userId : null,
         target_id: requestId,
         target_type: 'request',
         details: JSON.stringify({
@@ -657,15 +641,5 @@ export const sendAnonEmailTool: MCPTool = {
 // ============================================================================
 // Exports
 // ============================================================================
-
-export {
-  SendAnonEmailInputSchema,
-  SendAnonEmailResponse,
-  EmailSendError,
-  InvalidRelayAddressError,
-  InvalidRecipientError,
-  RateLimitExceededError,
-  AuthenticationError,
-};
 
 export default sendAnonEmailTool;
