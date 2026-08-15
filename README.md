@@ -5,14 +5,11 @@
   </picture>
 </p>
 
-<p align="center">
-  <a href="https://opensource.org/licenses/MIT"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg"></a>
+<h1 align="left">Firefox Relay MCP Server - Anonymous Email Management</h1>
+<p align="left">
   <a href="https://scorecard.dev/viewer/?uri=github.com/VrilLabs/anonsec-mcp-server"><img alt="OpenSSF Scorecard" src="https://api.scorecard.dev/projects/github.com/VrilLabs/anonsec-mcp-server/badge"></a>
 </p>
-
-<h1 align="center">Firefox Relay MCP Server - Anonymous Email Management</h1>
-
-<p align="center">
+<p align="left">
   <strong>Production-Ready MCP Server for Firefox Relay Anonymous Email Operations</strong>
 </p>
 
