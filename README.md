@@ -16,6 +16,23 @@
   <strong>Production-Ready MCP Server for Firefox Relay Anonymous Email Operations</strong>
 </p>
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js](https://img.shields.io/badge/Node-%3E%3D22.0.0-green.svg)](https://nodejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.6.3-blue.svg)](https://www.typescriptlang.org/)
+[![MCP](https://img.shields.io/badge/Model_Context_Protocol-2.0.0-orange.svg)](https://modelcontextprotocol.io/)
+
+<sub>// crafted for the security community — funding keeps it maintained</sub>
+
+[![GitHub Sponsors](assets/donate/github-sponsors.svg)](https://github.com/sponsors/VrilLabs)
+[![Open Collective](assets/donate/open-collective.svg)](https://opencollective.com/vrillabs)
+[![Ko-fi](assets/donate/ko-fi.svg)](https://ko-fi.com/vrillabs)
+[![Buy Me a Coffee](assets/donate/buy-me-a-coffee.svg)](https://buymeacoffee.com/vrillabs)
+[![thanks.dev](assets/donate/thanks-dev.svg)](https://thanks.dev/u/gh/vril-labs)
+
+---
+
+## Overview
+
 **Firefox Relay MCP Server** (`anonsec-mcp-server`) is a production-grade Model Context Protocol server that provides comprehensive anonymous email management capabilities through Firefox Relay addresses. Built with privacy, security, and operational excellence as core principles, this server enables AI agents and applications to send, receive, and process emails while maintaining complete anonymity.
 
 ## Core Value Proposition
