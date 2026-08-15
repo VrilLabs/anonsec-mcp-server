@@ -55,8 +55,6 @@ jobs:
         uses: trufflesecurity/trufflehog@43b8e371aa24a89de3ea57bde0769273b5d2b0fb
         with:
           path: ./
-          base: ${{ github.event.repository.default_branch }}
-          head: HEAD
           extra_args: --debug --only-verified
 
   static-analysis:
@@ -76,7 +74,7 @@ jobs:
         run: npm ci
 
       - name: Run ESLint (static analysis)
-        run: npx eslint src --ext .ts --format json > eslint-results.json || true
+        run: npx eslint src --format json > eslint-results.json || true
 
       - name: Upload ESLint results
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
