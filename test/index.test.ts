@@ -1,4 +1,6 @@
 import { describe, it, expect } from 'vitest';
+import { existsSync, readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 
 // Basic test to verify the server can be imported
 // Note: This is a placeholder test. In a real implementation, you would:
@@ -7,67 +9,56 @@ import { describe, it, expect } from 'vitest';
 // 3. Test resource access
 // 4. Test error handling
 
+const root = resolve(import.meta.dirname, '..');
+
 describe('Firefox Relay MCP Server', () => {
   it('should have a valid package.json', () => {
-    const pkg = require('../package.json');
+    const pkg = JSON.parse(readFileSync(resolve(root, 'package.json'), 'utf-8')) as { name: string; license: string; version?: string };
     expect(pkg.name).toBe('anonsec-mcp-server');
     expect(pkg.license).toBe('MIT');
     expect(pkg.version).toBeDefined();
   });
 
   it('should have a LICENSE file', () => {
-    const fs = require('fs');
-    const licensePath = require.path.resolve('../LICENSE');
-    expect(fs.existsSync(licensePath)).toBe(true);
+    expect(existsSync(resolve(root, 'LICENSE'))).toBe(true);
   });
 
   it('should have a README file', () => {
-    const fs = require('fs');
-    const readmePath = require.path.resolve('../README.md');
-    expect(fs.existsSync(readmePath)).toBe(true);
+    expect(existsSync(resolve(root, 'README.md'))).toBe(true);
   });
 
   it('should have TypeScript configuration', () => {
-    const fs = require('fs');
-    const tsconfigPath = require.path.resolve('../tsconfig.json');
-    expect(fs.existsSync(tsconfigPath)).toBe(true);
+    expect(existsSync(resolve(root, 'tsconfig.json'))).toBe(true);
   });
 });
 
 describe('Security and Compliance', () => {
   it('should have a SECURITY.md file with vulnerability reporting', () => {
-    const fs = require('fs');
-    const securityPath = require.path.resolve('../SECURITY.md');
-    const content = fs.readFileSync(securityPath, 'utf-8');
-    
-    expect(fs.existsSync(securityPath)).toBe(true);
+    const securityPath = resolve(root, 'SECURITY.md');
+    const content = readFileSync(securityPath, 'utf-8');
+
+    expect(existsSync(securityPath)).toBe(true);
     expect(content).toContain('Reporting a Vulnerability');
     expect(content).toContain('security@');
   });
 
   it('should have a CONTRIBUTING.md file', () => {
-    const fs = require('fs');
-    const contributingPath = require.path.resolve('../CONTRIBUTING.md');
-    expect(fs.existsSync(contributingPath)).toBe(true);
+    expect(existsSync(resolve(root, 'CONTRIBUTING.md'))).toBe(true);
   });
 
   it('should have a CHANGELOG.md file', () => {
-    const fs = require('fs');
-    const changelogPath = require.path.resolve('../CHANGELOG.md');
-    expect(fs.existsSync(changelogPath)).toBe(true);
+    expect(existsSync(resolve(root, 'CHANGELOG.md'))).toBe(true);
   });
 });
 
 describe('Project Structure', () => {
   it('should have source files', () => {
-    const fs = require('fs');
-    expect(fs.existsSync(require.path.resolve('../src/index.ts'))).toBe(true);
+    expect(existsSync(resolve(root, 'src/index.ts'))).toBe(true);
   });
 
   it('should have TypeScript configuration', () => {
-    const fs = require('fs');
-    const tsconfig = require('../tsconfig.json');
+    const tsconfig = JSON.parse(readFileSync(resolve(root, 'tsconfig.json'), 'utf-8')) as { compilerOptions?: { strict?: boolean } };
     expect(tsconfig.compilerOptions).toBeDefined();
-    expect(tsconfig.compilerOptions.strict).toBe(true);
+    expect(tsconfig.compilerOptions?.strict).toBe(true);
   });
 });
