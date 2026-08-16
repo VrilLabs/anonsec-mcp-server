@@ -1,244 +1,233 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" width="100%" height="auto" preserveAspectRatio="none">
-  <style>
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 0.7; }
-      50% { opacity: 1; }
-    }
-    @keyframes glow {
-      0%, 100% { filter: drop-shadow(0 0 5px rgba(99, 102, 241, 0.3)); }
-      50% { filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.6)); }
-    }
-    @keyframes rotate {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-    .circuit-grid {
-      animation: float 6s ease-in-out infinite;
-    }
-    .mcp-node {
-      animation: spin 30s linear infinite;
-      transform-origin: center;
-    }
-    .envelope {
-      animation: float 5s ease-in-out infinite reverse;
-    }
-    .node {
-      animation: glow 3s ease-in-out infinite;
-    }
-    .pulse-ring {
-      transform-origin: center;
-      animation: rotate 20s linear infinite;
-    }
-    .data-flow {
-      animation: float 7s ease-in-out infinite;
-    }
-  </style>
-  
-  <!-- Background gradient -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 420" width="100%" height="auto" preserveAspectRatio="xMidYMid meet" role="img" aria-label="AnonSec MCP Server header illustration">
   <defs>
     <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
-      <stop offset="50%" style="stop-color:#1e293b;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#0f172a;stop-opacity:1" />
+      <stop offset="0%" stop-color="#050b16"/>
+      <stop offset="38%" stop-color="#0b1220"/>
+      <stop offset="72%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#050b16"/>
     </linearGradient>
-    
-    <linearGradient id="mcpGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:0.8" />
-      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0.8" />
-    </linearGradient>
-    
-    <linearGradient id="envelopeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.7" />
-      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:0.7" />
-    </linearGradient>
-    
-    <linearGradient id="dataGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.6" />
-      <stop offset="100%" style="stop-color:#059669;stop-opacity:0.6" />
-    </linearGradient>
-    
-    <radialGradient id="nodeGradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
-      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#6366f1;stop-opacity:0" />
+
+    <radialGradient id="leftGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.34"/>
+      <stop offset="45%" stop-color="#4338ca" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#050b16" stop-opacity="0"/>
     </radialGradient>
-    
-    <filter id="blur" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="2"/>
-    </filter>
-    
-    <pattern id="gridPattern" width="60" height="60" patternUnits="userSpaceOnUse">
-      <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#1e293b" stroke-width="1" opacity="0.3"/>
+
+    <radialGradient id="rightGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.2"/>
+      <stop offset="50%" stop-color="#0ea5e9" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#050b16" stop-opacity="0"/>
+    </radialGradient>
+
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1d4ed8" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#8b5cf6" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#22d3ee" stop-opacity="0.85"/>
+    </linearGradient>
+
+    <linearGradient id="coreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="50%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+
+    <linearGradient id="envelopeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#111827" stop-opacity="1"/>
+    </linearGradient>
+
+    <linearGradient id="mailAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#67e8f9"/>
+      <stop offset="35%" stop-color="#60a5fa"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+
+    <pattern id="gridPattern" width="50" height="50" patternUnits="userSpaceOnUse">
+      <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#94a3b8" stroke-opacity="0.12" stroke-width="1"/>
     </pattern>
+
+    <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="smallGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="20" stdDeviation="16" flood-color="#020817" flood-opacity="0.55"/>
+    </filter>
   </defs>
 
-  <!-- Background -->
-  <rect width="100%" height="100%" fill="url(#bgGradient)" />
-  <rect width="100%" height="100%" fill="url(#gridPattern)" opacity="0.5" />
+  <style><![CDATA[
+    @keyframes drift {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-12px); }
+    }
 
-  <!-- Left: Circuit Grid (MCP/Protocol representation) -->
-  <g class="circuit-grid" transform="translate(100, 50)">
-    <!-- Hexagonal circuit nodes -->
-    <g class="node" transform="translate(0, 0)">
-      <circle cx="0" cy="0" r="8" fill="#6366f1" />
-      <circle cx="0" cy="0" r="20" fill="none" stroke="#6366f1" stroke-width="1" opacity="0.3" />
-    </g>
-    <g class="node" transform="translate(80, 0)">
-      <circle cx="0" cy="0" r="8" fill="#8b5cf6" />
-      <circle cx="0" cy="0" r="20" fill="none" stroke="#8b5cf6" stroke-width="1" opacity="0.3" />
-    </g>
-    <g class="node" transform="translate(160, 0)">
-      <circle cx="0" cy="0" r="8" fill="#3b82f6" />
-      <circle cx="0" cy="0" r="20" fill="none" stroke="#3b82f6" stroke-width="1" opacity="0.3" />
-    </g>
-    <g class="node" transform="translate(40, 52)">
-      <circle cx="0" cy="0" r="8" fill="#1d4ed8" />
-      <circle cx="0" cy="0" r="20" fill="none" stroke="#1d4ed8" stroke-width="1" opacity="0.3" />
-    </g>
-    <g class="node" transform="translate(120, 52)">
-      <circle cx="0" cy="0" r="8" fill="#6366f1" />
-      <circle cx="0" cy="0" r="20" fill="none" stroke="#6366f1" stroke-width="1" opacity="0.3" />
-    </g>
-    
-    <!-- Connecting lines -->
-    <line x1="0" y1="0" x2="80" y2="0" stroke="#6366f1" stroke-width="2" opacity="0.6" />
-    <line x1="80" y1="0" x2="160" y2="0" stroke="#8b5cf6" stroke-width="2" opacity="0.6" />
-    <line x1="0" y1="0" x2="40" y2="52" stroke="#3b82f6" stroke-width="2" opacity="0.6" />
-    <line x1="40" y1="52" x2="120" y2="52" stroke="#1d4ed8" stroke-width="2" opacity="0.6" />
-    <line x1="120" y1="52" x2="160" y2="0" stroke="#6366f1" stroke-width="2" opacity="0.6" />
-    
-    <!-- Pulsing center node -->
-    <circle cx="80" cy="26" r="12" fill="none" stroke="#6366f1" stroke-width="3">
-      <animate attributeName="r" values="12;16;12" dur="3s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="80" cy="26" r="4" fill="#6366f1" />
-  </g>
+    @keyframes driftAlt {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(12px); }
+    }
 
-  <!-- Center: MCP Node Network (Represents the MCP Server) -->
-  <g class="mcp-node" transform="translate(500, 80)">
-    <!-- Outer hexagon frame -->
-    <path d="M -60 -50 L -20 -50 L 20 -20 L 60 -20 L 60 20 L 20 50 L -20 50 L -60 20 Z" 
-          fill="none" stroke="url(#mcpGradient)" stroke-width="2" />
-    
-    <!-- Inner hexagon (pulsing) -->
-    <path d="M -40 -35 L -15 -35 L 15 -15 L 40 -15 L 40 15 L 15 35 L -15 35 L -40 15 Z" 
-          fill="none" stroke="url(#mcpGradient)" stroke-width="1.5" opacity="0.8">
-      <animate attributeName="opacity" values="0.6;1;0.6" dur="3s" repeatCount="indefinite" />
-    </path>
-    
-    <!-- Connecting dots (representing network nodes) -->
-    <circle cx="-40" cy="-35" r="5" fill="#6366f1" />
-    <circle cx="-15" cy="-35" r="5" fill="#8b5cf6" />
-    <circle cx="15" cy="-15" r="5" fill="#6366f1" />
-    <circle cx="40" cy="-15" r="5" fill="#8b5cf6" />
-    <circle cx="40" cy="15" r="5" fill="#6366f1" />
-    <circle cx="15" cy="35" r="5" fill="#8b5cf6" />
-    <circle cx="-15" cy="35" r="5" fill="#6366f1" />
-    <circle cx="-40" cy="15" r="5" fill="#8b5cf6" />
-    
-    <!-- Center core (server node) -->
-    <circle cx="0" cy="0" r="20" fill="url(#mcpGradient)" />
-    <circle cx="0" cy="0" r="28" fill="none" stroke="#e2e8f0" stroke-width="2" opacity="0.9" />
-    
-    <!-- Plus sign (server indicator) -->
-    <line x1="-8" y1="0" x2="8" y2="0" stroke="#e2e8f0" stroke-width="3" />
-    <line x1="0" y1="-8" x2="0" y2="8" stroke="#e2e8f0" stroke-width="3" />
-    
-    <!-- Pulse rings -->
-    <circle cx="0" cy="0" r="50" fill="none" stroke="#6366f1" stroke-width="1" opacity="0.4" class="pulse-ring" />
-    <circle cx="0" cy="0" r="70" fill="none" stroke="#8b5cf6" stroke-width="1" opacity="0.2" class="pulse-ring" />
-    
-    <!-- Data flow particles -->
-    <circle cx="0" cy="0" r="3" fill="#10b981" class="data-flow">
-      <animateMotion path="M 0,0 25,-20 -25,20 0,0" dur="8s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="0" cy="0" r="3" fill="#059669" class="data-flow">
-      <animateMotion path="M 0,0 -20,25 20,-25 0,0" dur="6s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="0" cy="0" r="2" fill="#10b981" class="data-flow">
-      <animateMotion path="M 0,0 15,15 -15,-15 0,0" dur="5s" repeatCount="indefinite" />
-    </circle>
-  </g>
+    @keyframes pulse {
+      0%, 100% { opacity: 0.55; transform: scale(0.98); }
+      50% { opacity: 1; transform: scale(1.04); }
+    }
 
-  <!-- Right: Envelope (Email) -->
-  <g class="envelope" transform="translate(850, 80)">
-    <!-- Envelope body -->
-    <path d="M 0 0 L 100 0 L 100 80 L 50 100 L 0 80 Z" fill="url(#envelopeGradient)" stroke="none" />
-    <path d="M 0 0 L 100 0 L 100 80 L 50 100 L 0 80 Z" fill="none" stroke="#e2e8f0" stroke-width="2" opacity="0.6" />
-    
-    <!-- Envelope flap -->
-    <path d="M 0 0 L 50 50 L 100 0" fill="none" stroke="#e2e8f0" stroke-width="2" opacity="0.8" />
-    
-    <!-- Email lines -->
-    <line x1="15" y1="20" x2="85" y2="20" stroke="#e2e8f0" stroke-width="1.5" opacity="0.8" />
-    <line x1="15" y1="35" x2="75" y2="35" stroke="#e2e8f0" stroke-width="1.5" opacity="0.8" />
-    <line x1="15" y1="50" x2="85" y2="50" stroke="#e2e8f0" stroke-width="1.5" opacity="0.8" />
-    
-    <!-- Floating particles (representing anonymity/encryption) -->
-    <circle cx="20" cy="-10" r="4" fill="#6366f1" opacity="0.7">
-      <animate attributeName="cy" values="-10;5;-10" dur="4s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="80" cy="-15" r="4" fill="#8b5cf6" opacity="0.7">
-      <animate attributeName="cy" values="-15;10;-15" dur="5s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="40" cy="-8" r="3" fill="#3b82f6" opacity="0.7">
-      <animate attributeName="cy" values="-8;8;-8" dur="3s" repeatCount="indefinite" />
-    </circle>
-    
-    <!-- Lock icon (security indicator) -->
-    <g transform="translate(45, 30)">
-      <rect x="-8" y="-12" width="16" height="20" rx="2" fill="none" stroke="#e2e8f0" stroke-width="1.5" />
-      <circle cx="0" cy="-2" r="4" fill="none" stroke="#e2e8f0" stroke-width="1.5" />
-      <line x1="0" y1="2" x2="0" y2="6" stroke="#e2e8f0" stroke-width="1.5" />
+    @keyframes rotateSlow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes spark {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    @keyframes orbit {
+      0% { transform: rotate(0deg) translateX(0px) scale(1); }
+      50% { transform: rotate(180deg) translateX(8px) scale(1.04); }
+      100% { transform: rotate(360deg) translateX(0px) scale(1); }
+    }
+
+    .drift { animation: drift 9s ease-in-out infinite; transform-origin: center; }
+    .drift-alt { animation: driftAlt 11s ease-in-out infinite; transform-origin: center; }
+    .pulse { animation: pulse 4s ease-in-out infinite; transform-origin: center; }
+    .spin { animation: rotateSlow 28s linear infinite; transform-origin: center; }
+    .spin-reverse { animation: rotateSlow 36s linear infinite reverse; transform-origin: center; }
+    .spark { animation: spark 2.8s ease-in-out infinite; }
+    .orbit { animation: orbit 14s ease-in-out infinite; transform-origin: center; }
+
+    .title { letter-spacing: 2px; }
+    .subtitle { letter-spacing: 1px; }
+  ]]></style>
+
+  <rect width="1600" height="420" fill="url(#bgGradient)"/>
+  <rect width="1600" height="420" fill="url(#gridPattern)" opacity="0.9"/>
+  <circle cx="250" cy="140" r="260" fill="url(#leftGlow)"/>
+  <circle cx="1360" cy="290" r="250" fill="url(#rightGlow)"/>
+
+  <g class="drift" filter="url(#shadow)">
+    <g transform="translate(200 228)">
+      <circle cx="0" cy="0" r="120" fill="none" stroke="url(#accentGradient)" stroke-width="1.2" opacity="0.35"/>
+      <circle cx="0" cy="0" r="86" fill="none" stroke="#94a3b8" stroke-opacity="0.26" stroke-width="1"/>
+
+      <g class="spin-reverse" opacity="0.9">
+        <path d="M 0 -78 L 64 -30 L 64 30 L 0 78 L -64 30 L -64 -30 Z" fill="none" stroke="url(#accentGradient)" stroke-width="2"/>
+        <path d="M 0 -52 L 44 -20 L 44 20 L 0 52 L -44 20 L -44 -20 Z" fill="none" stroke="#bfdbfe" stroke-opacity="0.6" stroke-width="1.5"/>
+      </g>
+
+      <g fill="#e2e8f0">
+        <circle cx="0" cy="-78" r="6" fill="#7dd3fc"/>
+        <circle cx="64" cy="-30" r="6" fill="#8b5cf6"/>
+        <circle cx="64" cy="30" r="6" fill="#60a5fa"/>
+        <circle cx="0" cy="78" r="6" fill="#34d399"/>
+        <circle cx="-64" cy="30" r="6" fill="#a78bfa"/>
+        <circle cx="-64" cy="-30" r="6" fill="#34d399"/>
+      </g>
+
+      <g stroke="#a5b4fc" stroke-opacity="0.7" stroke-width="1.8" fill="none">
+        <path d="M 0 -78 L 64 -30 L 0 0 L -64 -30 Z"/>
+        <path d="M 64 -30 L 64 30 L 0 0 L 0 78 Z"/>
+        <path d="M 0 78 L -64 30 L 0 0 L 64 30 Z"/>
+      </g>
+
+      <g class="pulse">
+        <circle cx="0" cy="0" r="18" fill="#0ea5e9" fill-opacity="0.18" stroke="url(#accentGradient)" stroke-width="2"/>
+        <circle cx="0" cy="0" r="8" fill="url(#coreGradient)"/>
+        <path d="M -8 0 L 8 0 M 0 -8 L 0 8" stroke="#e0f2fe" stroke-width="2.5" stroke-linecap="round"/>
+      </g>
     </g>
   </g>
 
-  <!-- Data Flow Lines (connecting all elements) -->
-  <g transform="translate(0, 150)" opacity="0.4">
-    <path d="M 250 0 Q 400 -30 500 0" fill="none" stroke="#10b981" stroke-width="2" />
-    <path d="M 500 0 Q 600 -20 700 0" fill="none" stroke="#059669" stroke-width="2" />
-    <path d="M 700 0 Q 850 -30 950 0" fill="none" stroke="#10b981" stroke-width="2" />
-    
-    <!-- Animated data packets -->
-    <circle cx="350" cy="0" r="4" fill="#10b981" class="data-flow">
-      <animateMotion path="M 0,0 100,0" dur="5s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="650" cy="0" r="4" fill="#059669" class="data-flow">
-      <animateMotion path="M 0,0 -100,0" dur="6s" repeatCount="indefinite" />
-    </circle>
+  <g class="drift-alt" filter="url(#softGlow)">
+    <g transform="translate(786 206)">
+      <circle cx="0" cy="0" r="118" fill="none" stroke="url(#accentGradient)" stroke-width="1.4" opacity="0.62"/>
+      <circle cx="0" cy="0" r="78" fill="none" stroke="#cbd5e1" stroke-opacity="0.28" stroke-width="1.2"/>
+      <circle cx="0" cy="0" r="148" fill="none" stroke="#60a5fa" stroke-opacity="0.15" stroke-width="1.2"/>
+
+      <g class="spin">
+        <g fill="#e2e8f0">
+          <circle cx="0" cy="-116" r="5" fill="#7dd3fc"/>
+          <circle cx="82" cy="-82" r="5" fill="#a78bfa"/>
+          <circle cx="116" cy="0" r="5" fill="#60a5fa"/>
+          <circle cx="82" cy="82" r="5" fill="#22c55e"/>
+          <circle cx="0" cy="116" r="5" fill="#7dd3fc"/>
+          <circle cx="-82" cy="82" r="5" fill="#a78bfa"/>
+          <circle cx="-116" cy="0" r="5" fill="#60a5fa"/>
+          <circle cx="-82" cy="-82" r="5" fill="#22c55e"/>
+        </g>
+      </g>
+
+      <g class="pulse" opacity="0.95">
+        <circle cx="0" cy="0" r="34" fill="url(#coreGradient)" fill-opacity="0.95"/>
+        <circle cx="0" cy="0" r="46" fill="none" stroke="#e2e8f0" stroke-opacity="0.85" stroke-width="1.8"/>
+        <circle cx="0" cy="0" r="62" fill="none" stroke="#8b5cf6" stroke-opacity="0.22" stroke-width="1.5"/>
+        <path d="M -12 0 L 12 0 M 0 -12 L 0 12" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/>
+      </g>
+
+      <g class="spark" fill="#22d3ee" opacity="0.9">
+        <circle cx="20" cy="-42" r="3"/>
+        <circle cx="52" cy="-10" r="3"/>
+        <circle cx="-48" cy="26" r="3"/>
+        <circle cx="-14" cy="48" r="3"/>
+      </g>
+    </g>
   </g>
 
-  <!-- Project Title Overlay -->
-  <g transform="translate(600, 220)" text-anchor="middle">
-    <text x="0" y="0" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="32" font-weight="700" fill="#f8fafc">
-      ANONSEC MCP SERVER
-    </text>
-    <text x="0" y="40" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="16" font-weight="400" fill="#94a3b8" opacity="0.9">
-      Anonymous Email Management
-    </text>
-    <text x="0" y="70" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="14" font-weight="400" fill="#64748b" opacity="0.8">
-      by VRIL LABS
-    </text>
-    <text x="0" y="90" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="12" font-weight="400" fill="#6366f1" opacity="0.7">
-      vril.li
-    </text>
+  <g class="drift" filter="url(#shadow)">
+    <g transform="translate(1228 206)">
+      <path d="M -104 2 L 0 82 L 104 2 L 104 112 L -104 112 Z" fill="url(#envelopeGradient)" stroke="#e2e8f0" stroke-opacity="0.42" stroke-width="1.4"/>
+      <path d="M -104 2 L 0 74 L 104 2" fill="none" stroke="#cbd5e1" stroke-opacity="0.9" stroke-width="2"/>
+      <path d="M -104 2 L -76 96 L 76 96 L 104 2" fill="none" stroke="#a5b4fc" stroke-opacity="0.28" stroke-width="1.2"/>
+
+      <g stroke="url(#mailAccent)" stroke-width="2" stroke-linecap="round" opacity="0.8">
+        <path d="M -62 26 L 60 26"/>
+        <path d="M -62 46 L 42 46"/>
+        <path d="M -62 66 L 58 66"/>
+      </g>
+
+      <g transform="translate(0 12)">
+        <rect x="-18" y="10" width="36" height="42" rx="8" fill="none" stroke="#e2e8f0" stroke-opacity="0.8" stroke-width="1.8"/>
+        <circle cx="0" cy="24" r="10" fill="none" stroke="#e2e8f0" stroke-opacity="0.8" stroke-width="1.8"/>
+        <path d="M -1 24 L 1 24 M 0 23 L 0 35" stroke="#e2e8f0" stroke-width="1.8" stroke-linecap="round"/>
+      </g>
+
+      <g class="spark" fill="#7dd3fc" opacity="0.9">
+        <circle cx="-58" cy="-22" r="5"/>
+        <circle cx="62" cy="-30" r="5"/>
+        <circle cx="16" cy="-46" r="4"/>
+      </g>
+    </g>
   </g>
 
-  <!-- Bottom accent bars -->
-  <g transform="translate(0, 280)">
-    <rect x="0" y="0" width="300" height="20" fill="#6366f1" opacity="0.3" />
-    <rect x="300" y="0" width="600" height="20" fill="#8b5cf6" opacity="0.2" />
-    <rect x="900" y="0" width="300" height="20" fill="#3b82f6" opacity="0.3" />
+  <g opacity="0.9" transform="translate(0 0)">
+    <path d="M 350 316 C 470 282, 610 282, 760 316" fill="none" stroke="#22c55e" stroke-opacity="0.64" stroke-width="2"/>
+    <path d="M 760 316 C 900 282, 1050 282, 1218 316" fill="none" stroke="#60a5fa" stroke-opacity="0.64" stroke-width="2"/>
+    <circle cx="440" cy="316" r="4" fill="#34d399" class="spark"/>
+    <circle cx="760" cy="316" r="4" fill="#60a5fa" class="spark"/>
+    <circle cx="1090" cy="316" r="4" fill="#22c55e" class="spark"/>
+  </g>
+
+  <g transform="translate(800 230)" text-anchor="middle" fill="#f8fafc">
+    <text class="title" x="0" y="0" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="40" font-weight="700" fill="#f8fafc">ANONSEC</text>
+    <text class="subtitle" x="0" y="32" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="600" fill="#bfdbfe" letter-spacing="7">MCP SERVER</text>
+    <text x="0" y="62" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="500" fill="#94a3b8">Anonymous Email Management</text>
+    <text x="0" y="88" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#7dd3fc" letter-spacing="5">VRIL LABS</text>
+  </g>
+
+  <g transform="translate(0 382)">
+    <rect x="0" y="0" width="320" height="10" rx="5" fill="#3b82f6" fill-opacity="0.28"/>
+    <rect x="330" y="0" width="940" height="10" rx="5" fill="#8b5cf6" fill-opacity="0.24"/>
+    <rect x="1280" y="0" width="320" height="10" rx="5" fill="#22d3ee" fill-opacity="0.24"/>
   </g>
 </svg>
