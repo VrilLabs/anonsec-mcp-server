@@ -56,6 +56,27 @@ jobs:
           path: ./
           extra_args: --debug --only-verified
 
+  gitleaks:
+    name: Gitleaks Scan
+    # Secrets (GITLEAKS_KEY) are unavailable on workflows from forked PRs.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_KEY }}
+
   static-analysis:
     name: Static Analysis
     runs-on: ubuntu-latest
