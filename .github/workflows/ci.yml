@@ -58,6 +58,8 @@ jobs:
 
   gitleaks:
     name: Gitleaks Scan
+    # Secrets (GITLEAKS_KEY) are unavailable on workflows from forked PRs.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     permissions:
       contents: read
