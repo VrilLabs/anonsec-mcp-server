@@ -7,7 +7,7 @@
 
 <h1 align="left">Firefox Relay MCP Server - Anonymous Email Management</h1>
 <p align="left">
-  <a href="https://scorecard.dev/viewer/?uri=github.com/VrilLabs/anonsec-mcp-server"><img alt="OpenSSF Scorecard" src="https://api.scorecard.dev/projects/github.com/VrilLabs/anonsec-mcp-server/badge"></a>
+  <a href="https://scorecard.dev/viewer/?uri=github.com/VRIL-LABS/anonsec-mcp-server"><img alt="OpenSSF Scorecard" src="https://api.scorecard.dev/projects/github.com/VRIL-LABS/anonsec-mcp-server/badge"></a>
 </p>
 <p align="left">
   <strong>Production-Ready MCP Server for Firefox Relay Anonymous Email Operations</strong>
@@ -20,7 +20,7 @@
 
 <sub>// crafted for the security community — funding keeps it maintained</sub>
 
-[![GitHub Sponsors](assets/donate/github-sponsors.svg)](https://github.com/sponsors/VrilLabs)
+[![GitHub Sponsors](assets/donate/github-sponsors.svg)](https://github.com/sponsors/VRIL-LABS)
 [![Open Collective](assets/donate/open-collective.svg)](https://opencollective.com/vrillabs)
 [![Ko-fi](assets/donate/ko-fi.svg)](https://ko-fi.com/vrillabs)
 [![Buy Me a Coffee](assets/donate/buy-me-a-coffee.svg)](https://buymeacoffee.com/vrillabs)
@@ -51,7 +51,7 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/VrilLabs/anonsec-mcp-server.git
+git clone https://github.com/VRIL-LABS/anonsec-mcp-server.git
 cd anonsec-mcp-server
 
 # Install dependencies
