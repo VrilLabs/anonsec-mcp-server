@@ -51,7 +51,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
       - name: Run secret scan
-        uses: trufflesecurity/trufflehog@43b8e371aa24a89de3ea57bde0769273b5d2b0fb
+        uses: trufflesecurity/trufflehog@9d3f5d13af284a8174104191c44755b7c742e125
         with:
           path: ./
           extra_args: --debug --only-verified
